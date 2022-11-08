@@ -1,0 +1,23 @@
+integrations:
+  - name: nri-flex
+    interval: 60s
+    timeout: 5s
+    config:
+      name: ecstest
+      apis:
+        - event_type: JsonApiCallSample
+          url: https://jsonplaceholder.typicode.com/todos/1
+          method: GET
+  - name: nri-flex 
+    interval: 30s
+    config:
+      name: dfFlex
+      apis:
+        - name: dfOutput
+          commands:
+            - run: df -i
+              split: horizontal
+              set_header: [filesystem,inodes,iused,ifree,iusedPerf,mountedOn]
+              regex_match: true
+              split_by: (\S+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\S+)\s+(\S+)
+          perc_to_decimal: true

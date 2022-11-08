@@ -1,0 +1,15 @@
+version: "3"
+services:
+  newrelic-flex:
+    container_name: nrflex
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: nri-ecs-custom:1.9.6
+    entrypoint: [ "/bin/bash" ]
+    env_file:
+      - .env
+    volumes:
+      - ".:/workspace"
+    working_dir: /workspace
+    tty: true

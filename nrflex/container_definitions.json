@@ -1,0 +1,58 @@
+[
+    {
+        "name": "httpd-container",
+        "image": "httpd:latest",
+        "essential": true,
+        "memory": 128,
+        "portMappings": [
+            {
+                "protocol": "tcp",
+                "containerPort": 80
+            }
+        ]
+    },
+    {
+        "name": "newrelic-flex",
+        "image": "${aws_ecr_repository.newrelic_flex.repository_url}:latest",
+        "cpu": 256,
+        "memoryReservation": 512,
+        "environment": [
+            {
+                "name": "NRIA_LICENSE_KEY",
+                "value": "${var.nr_licence_key}"
+            },
+            {
+                "name": "NRIA_OVERRIDE_HOST_ROOT",
+                "value": ""
+            },
+            {
+                "name": "NRIA_IS_SECURE_FORWARD_ONLY",
+                "value": "true"
+            },
+            {
+                "name": "FARGATE",
+                "value": "true"
+            },
+            {
+                "name": "ENABLE_NRI_ECS",
+                "value": "true"
+            },
+            {
+                "name": "NRIA_PASSTHROUGH_ENVIRONMENT",
+                "value": "ECS_CONTAINER_METADATA_URI,ENABLE_NRI_ECS,FARGATE"
+            }
+        ],
+        "essential": true,
+        "linuxParameters": {
+            "initProcessEnabled": true
+        },
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-group": "${aws_cloudwatch_log_group.newrelic_flex.name}",
+                "awslogs-stream-prefix": "nrflex",
+                "awslogs-region": "ap-northeast-1"
+            }
+        }
+    }
+]
